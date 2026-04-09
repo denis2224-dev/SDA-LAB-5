@@ -36,3 +36,4 @@ CMakeUserPresets.json
 
 # Current local binary built in project root
 /main
+input.txt

@@ -1,0 +1,38 @@
+# macOS
+.DS_Store
+
+# JetBrains / CLion
+.idea/
+*.iml
+
+# CMake build directories
+cmake-build-*/
+build/
+out/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+Makefile
+compile_commands.json
+install_manifest.txt
+Testing/
+_deps/
+CMakeUserPresets.json
+
+# Compiled objects and binaries
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+*.app
+
+# Current local binary built in project root
+/main

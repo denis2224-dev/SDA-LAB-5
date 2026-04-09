@@ -31,6 +31,20 @@ char *read_line(void) {
     return buffer;
 }
 
+
+int write_text_file(const char *filename, const char *text) {
+    FILE *file = fopen(filename, "w");
+
+    if (file == NULL) {
+        return 0;
+    }
+
+    fputs(text, file);
+    fclose(file);
+    return 1;
+}
+
+
 int main(void) {
     char *text = NULL;
 
@@ -42,7 +56,13 @@ int main(void) {
         return 1;
     }
 
-    printf("\nYou entered:\n%s\n", text);
+    if (!write_text_file("input.txt", text)) {
+        fprintf(stderr, "Could not write to input.txt\n");
+        free(text);
+        return 1;
+    }
+
+    printf("\nText was written to input.txt successfully.\n");
 
     free(text);
 

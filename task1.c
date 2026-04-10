@@ -45,8 +45,35 @@ int write_text_file(const char *filename, const char *text) {
 }
 
 
+char *read_text_file(const char *filename) {
+    FILE *file;
+    char *buffer;
+
+    file = fopen(filename, "r");
+    if (file == NULL) {
+        return NULL;
+    }
+
+    buffer = malloc(1000 * sizeof(char));
+    if (buffer == NULL) {
+        fclose(file);
+        return NULL;
+    }
+
+    if (fgets(buffer, 1000, file) == NULL) {
+        free(buffer);
+        fclose(file);
+        return NULL;
+    }
+
+    fclose(file);
+    return buffer;
+}
+
+
 int main(void) {
     char *text = NULL;
+    char *file_text = NULL;
 
     printf("Enter a text line:\n");
     text = read_line();
@@ -64,7 +91,17 @@ int main(void) {
 
     printf("\nText was written to input.txt successfully.\n");
 
+    file_text = read_text_file("input.txt");
+    if (file_text == NULL) {
+        fprintf(stderr, "Could not read from input.txt\n");
+        free(text);
+        return 1;
+    }
+
+    printf("\nText read from file:\n%s\n", file_text);
+
     free(text);
+    free(file_text);
 
     return 0;
 }

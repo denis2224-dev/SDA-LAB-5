@@ -48,24 +48,36 @@ int write_text_file(const char *filename, const char *text) {
 
 char *read_text_file(const char *filename) {
     FILE *file;
+    long size;
     char *buffer;
+    size_t bytes_read;
 
     file = fopen(filename, "r");
     if (file == NULL) {
         return NULL;
     }
 
-    buffer = malloc(1000 * sizeof(char));
+    if (fseek(file, 0, SEEK_END) != 0) {
+        fclose(file);
+        return NULL;
+    }
+
+    size = ftell(file);
+    if (size < 0) {
+        fclose(file);
+        return NULL;
+    }
+
+    rewind(file);
+
+    buffer = malloc((size_t)size + 1);
     if (buffer == NULL) {
         fclose(file);
         return NULL;
     }
 
-    if (fgets(buffer, 1000, file) == NULL) {
-        free(buffer);
-        fclose(file);
-        return NULL;
-    }
+    bytes_read = fread(buffer, 1, (size_t)size, file);
+    buffer[bytes_read] = '\0';
 
     fclose(file);
     return buffer;

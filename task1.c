@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 char *read_line(void) {
     size_t capacity = 16;
@@ -71,25 +72,104 @@ char *read_text_file(const char *filename) {
 }
 
 
-void analyze_text(const char *text, int *declarative_count, int *ellipsis_count) {
-    int i = 0;
+size_t trimmed_length(const char *start, const char *end) {
+    while (start <= end && isspace((unsigned char)*start)) {
+        start++;
+    }
+
+    while (end >= start && isspace((unsigned char)*end)) {
+        end--;
+    }
+
+    if (start > end) {
+        return 0;
+    }
+
+    return (size_t)(end - start + 1);
+}
+
+
+void analyze_text(const char *text, int *declarative_count, int *ellipsis_count,
+                  int *difference, size_t *second_ellipsis_length, int *has_second) {
+    const char *p = text;
+    const char *sentence_start = text;
+    int ellipsis_index = 0;
 
     *declarative_count = 0;
     *ellipsis_count = 0;
+    *difference = 0;
+    *second_ellipsis_length = 0;
+    *has_second = 0;
 
-    while (text[i] != '\0') {
-        if (text[i] == '.' && text[i + 1] == '.' && text[i + 2] == '.') {
-            (*ellipsis_count)++;
-            i += 3;
-        } else if (text[i] == '.') {
-            (*declarative_count)++;
-            i++;
+    while (*p != '\0') {
+        if (p[0] == '.' && p[1] == '.' && p[2] == '.') {
+            size_t len = trimmed_length(sentence_start, p + 2);
+
+            if (len > 0) {
+                (*ellipsis_count)++;
+                ellipsis_index++;
+
+                if (ellipsis_index == 2) {
+                    *second_ellipsis_length = len;
+                    *has_second = 1;
+                }
+            }
+
+            p += 3;
+            while (*p != '\0' && isspace((unsigned char)*p)) {
+                p++;
+            }
+            sentence_start = p;
+        } else if (*p == '.') {
+            size_t len = trimmed_length(sentence_start, p);
+
+            if (len > 0) {
+                (*declarative_count)++;
+            }
+
+            p++;
+            while (*p != '\0' && isspace((unsigned char)*p)) {
+                p++;
+            }
+            sentence_start = p;
+        } else if (*p == '!' || *p == '?') {
+            p++;
+            while (*p != '\0' && isspace((unsigned char)*p)) {
+                p++;
+            }
+            sentence_start = p;
         } else {
-            i++;
+            p++;
         }
     }
+
+    *difference = *declarative_count - *ellipsis_count;
 }
 
+
+int save_result(const char *filename, int declarative_count, int ellipsis_count,
+                int difference, size_t second_ellipsis_length, int has_second) {
+    FILE *file = fopen(filename, "w");
+
+    if (file == NULL) {
+        return 0;
+    }
+
+    fprintf(file, "Analysis result:\n");
+    fprintf(file, "Declarative sentences: %d\n", declarative_count);
+    fprintf(file, "Sentences ending with '...': %d\n", ellipsis_count);
+    fprintf(file, "Difference: %d\n", difference);
+
+    if (has_second) {
+        fprintf(file, "Length of the 2nd sentence ending with '...': %zu\n",
+                second_ellipsis_length);
+    } else {
+        fprintf(file, "There is no second sentence ending with '...'\n");
+    }
+
+    fclose(file);
+    return 1;
+}
 
 
 int main(void) {
@@ -97,6 +177,9 @@ int main(void) {
     char *file_text = NULL;
     int declarative_count = 0;
     int ellipsis_count = 0;
+    int difference = 0;
+    int has_second = 0;
+    size_t second_ellipsis_length = 0;
 
     printf("Enter a text line:\n");
     text = read_line();
@@ -119,13 +202,30 @@ int main(void) {
         return 1;
     }
 
-    printf("\nText read from file:\n%s\n", file_text);
+    analyze_text(file_text, &declarative_count, &ellipsis_count,
+                 &difference, &second_ellipsis_length, &has_second);
 
-    analyze_text(file_text, &declarative_count, &ellipsis_count);
-
-    printf("\nSentence detection result:\n");
-    printf("Sentences ending with '.': %d\n", declarative_count);
+    printf("\nAnalysis result:\n");
+    printf("Declarative sentences: %d\n", declarative_count);
     printf("Sentences ending with '...': %d\n", ellipsis_count);
+    printf("Difference: %d\n", difference);
+
+    if (has_second) {
+        printf("Length of the 2nd sentence ending with '...': %zu\n",
+               second_ellipsis_length);
+    } else {
+        printf("There is no second sentence ending with '...'\n");
+    }
+
+    if (!save_result("output.txt", declarative_count, ellipsis_count,
+                     difference, second_ellipsis_length, has_second)) {
+        fprintf(stderr, "Could not write to output.txt\n");
+        free(text);
+        free(file_text);
+        return 1;
+    }
+
+    printf("Results were written to output.txt\n");
 
     free(text);
     free(file_text);

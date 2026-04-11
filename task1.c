@@ -71,9 +71,32 @@ char *read_text_file(const char *filename) {
 }
 
 
+void analyze_text(const char *text, int *declarative_count, int *ellipsis_count) {
+    int i = 0;
+
+    *declarative_count = 0;
+    *ellipsis_count = 0;
+
+    while (text[i] != '\0') {
+        if (text[i] == '.' && text[i + 1] == '.' && text[i + 2] == '.') {
+            (*ellipsis_count)++;
+            i += 3;
+        } else if (text[i] == '.') {
+            (*declarative_count)++;
+            i++;
+        } else {
+            i++;
+        }
+    }
+}
+
+
+
 int main(void) {
     char *text = NULL;
     char *file_text = NULL;
+    int declarative_count = 0;
+    int ellipsis_count = 0;
 
     printf("Enter a text line:\n");
     text = read_line();
@@ -89,8 +112,6 @@ int main(void) {
         return 1;
     }
 
-    printf("\nText was written to input.txt successfully.\n");
-
     file_text = read_text_file("input.txt");
     if (file_text == NULL) {
         fprintf(stderr, "Could not read from input.txt\n");
@@ -99,6 +120,12 @@ int main(void) {
     }
 
     printf("\nText read from file:\n%s\n", file_text);
+
+    analyze_text(file_text, &declarative_count, &ellipsis_count);
+
+    printf("\nSentence detection result:\n");
+    printf("Sentences ending with '.': %d\n", declarative_count);
+    printf("Sentences ending with '...': %d\n", ellipsis_count);
 
     free(text);
     free(file_text);

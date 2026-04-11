@@ -5,4 +5,5 @@ project(LAB5)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-add_executable(task task1.c)
+add_executable(task1 task1.c)
+add_executable(task2 task2.c)

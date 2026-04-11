@@ -6,7 +6,7 @@ char *read_line(void) {
     size_t capacity = 16;
     size_t length = 0;
     int ch;
-    char *buffer = malloc(capacity * sizeof(char));
+    char *buffer = (char *)malloc(capacity * sizeof(char));
     char *temp;
 
     if (buffer == NULL) {
@@ -16,7 +16,7 @@ char *read_line(void) {
     while ((ch = getchar()) != '\n' && ch != EOF) {
         if (length + 1 >= capacity) {
             capacity *= 2;
-            temp = realloc(buffer, capacity * sizeof(char));
+            temp = (char *)realloc(buffer, capacity * sizeof(char));
             if (temp == NULL) {
                 free(buffer);
                 return NULL;
@@ -24,11 +24,11 @@ char *read_line(void) {
             buffer = temp;
         }
 
-        buffer[length] = (char)ch;
+        *(buffer + length) = (char)ch;
         length++;
     }
 
-    buffer[length] = '\0';
+    *(buffer + length) = '\0';
     return buffer;
 }
 

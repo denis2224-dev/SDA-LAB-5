@@ -2,149 +2,150 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_CHAR 50
+#define MAX_CHAR 50 // maximum string length
 
 typedef struct {
-    int day;
-    char month[MAX_CHAR];
-    int year;
+    int day; // contract day
+    char month[MAX_CHAR]; // contract month
+    int year; // contract year
 } Date;
 
 typedef struct {
-    char owner_name[MAX_CHAR];
-    char owner_surname[MAX_CHAR];
-    char product_name[MAX_CHAR];
-    char manufacturer[MAX_CHAR];
-    Date contract_date;
-    float wholesale_price;
-    float unit_price;
-    int quantity;
+    char owner_name[MAX_CHAR]; // owner first name
+    char owner_surname[MAX_CHAR]; // owner surname
+    char product_name[MAX_CHAR]; // product name
+    char manufacturer[MAX_CHAR]; // manufacturer name
+    Date contract_date; // contract date
+    float wholesale_price; // wholesale price
+    float unit_price; // unit price
+    int quantity; // quantity of product
 } Info;
 
 typedef struct {
-    char product_name[MAX_CHAR];
-    int total_quantity;
+    char product_name[MAX_CHAR]; // product name
+    int total_quantity; // total quantity for this product
 } ProductTotal;
 
 
 char *read_line(void) {
-    size_t capacity = 16;
-    size_t length = 0;
-    int ch;
-    char *buffer = (char *)malloc(capacity * sizeof(char));
-    char *temp;
+    size_t capacity = 16; // initial buffer size
+    size_t length = 0; // current text length
+    int ch; // current character
+    char *buffer = (char *)malloc(capacity * sizeof(char)); // dynamic buffer
+    char *temp; // temporary pointer for realloc
 
     if (buffer == NULL) {
-        return NULL;
+        return NULL; // allocation failed
     }
 
-    while ((ch = getchar()) != '\n' && ch != EOF) {
-        if (length + 1 >= capacity) {
-            capacity *= 2;
-            temp = (char *)realloc(buffer, capacity * sizeof(char));
+    while ((ch = getchar()) != '\n' && ch != EOF) { // read until Enter or EOF
+        if (length + 1 >= capacity) { // check if buffer is full
+            capacity *= 2; // double buffer size
+            temp = (char *)realloc(buffer, capacity * sizeof(char)); // resize buffer
             if (temp == NULL) {
-                free(buffer);
+                free(buffer); // free old memory if realloc fails
                 return NULL;
             }
-            buffer = temp;
+            buffer = temp; // update buffer pointer
         }
 
-        *(buffer + length) = (char)ch;
-        length++;
+        *(buffer + length) = (char)ch; // store character
+        length++; // move to next position
     }
 
-    *(buffer + length) = '\0';
-    return buffer;
+    *(buffer + length) = '\0'; // end the string
+    return buffer; // return entered text
 }
 
 
 void clear_input_buffer(void) {
-    int ch;
-    while ((ch = getchar()) != '\n' && ch != EOF) {
+    int ch; // current character
+
+    while ((ch = getchar()) != '\n' && ch != EOF) { // remove leftover input
     }
 }
 
 
 void input_info(Info *item) {
-    char *line;
+    char *line; // temporary dynamic string
 
     printf("Owner name: ");
-    line = read_line();
+    line = read_line(); // read owner name
     if (line != NULL) {
-        strncpy(item->owner_name, line, MAX_CHAR - 1);
-        item->owner_name[MAX_CHAR - 1] = '\0';
-        free(line);
+        strncpy(item->owner_name, line, MAX_CHAR - 1); // copy into struct
+        item->owner_name[MAX_CHAR - 1] = '\0'; // ensure end of string
+        free(line); // free dynamic memory
     } else {
-        item->owner_name[0] = '\0';
+        item->owner_name[0] = '\0'; // empty string on failure
     }
 
     printf("Owner surname: ");
-    line = read_line();
+    line = read_line(); // read owner surname
     if (line != NULL) {
-        strncpy(item->owner_surname, line, MAX_CHAR - 1);
-        item->owner_surname[MAX_CHAR - 1] = '\0';
-        free(line);
+        strncpy(item->owner_surname, line, MAX_CHAR - 1); // copy into struct
+        item->owner_surname[MAX_CHAR - 1] = '\0'; // ensure end of string
+        free(line); // free dynamic memory
     } else {
-        item->owner_surname[0] = '\0';
+        item->owner_surname[0] = '\0'; // empty string on failure
     }
 
     printf("Product name: ");
-    line = read_line();
+    line = read_line(); // read product name
     if (line != NULL) {
-        strncpy(item->product_name, line, MAX_CHAR - 1);
-        item->product_name[MAX_CHAR - 1] = '\0';
-        free(line);
+        strncpy(item->product_name, line, MAX_CHAR - 1); // copy into struct
+        item->product_name[MAX_CHAR - 1] = '\0'; // ensure end of string
+        free(line); // free dynamic memory
     } else {
-        item->product_name[0] = '\0';
+        item->product_name[0] = '\0'; // empty string on failure
     }
 
     printf("Manufacturer: ");
-    line = read_line();
+    line = read_line(); // read manufacturer
     if (line != NULL) {
-        strncpy(item->manufacturer, line, MAX_CHAR - 1);
-        item->manufacturer[MAX_CHAR - 1] = '\0';
-        free(line);
+        strncpy(item->manufacturer, line, MAX_CHAR - 1); // copy into struct
+        item->manufacturer[MAX_CHAR - 1] = '\0'; // ensure end of string
+        free(line); // free dynamic memory
     } else {
-        item->manufacturer[0] = '\0';
+        item->manufacturer[0] = '\0'; // empty string on failure
     }
 
     printf("Day: ");
-    scanf("%d", &item->contract_date.day);
-    clear_input_buffer();
+    scanf("%d", &item->contract_date.day); // read day
+    clear_input_buffer(); // clear newline
 
     printf("Month: ");
-    line = read_line();
+    line = read_line(); // read month
     if (line != NULL) {
-        strncpy(item->contract_date.month, line, MAX_CHAR - 1);
-        item->contract_date.month[MAX_CHAR - 1] = '\0';
-        free(line);
+        strncpy(item->contract_date.month, line, MAX_CHAR - 1); // copy month
+        item->contract_date.month[MAX_CHAR - 1] = '\0'; // ensure end of string
+        free(line); // free dynamic memory
     } else {
-        item->contract_date.month[0] = '\0';
+        item->contract_date.month[0] = '\0'; // empty string on failure
     }
 
     printf("Year: ");
-    scanf("%d", &item->contract_date.year);
-    clear_input_buffer();
+    scanf("%d", &item->contract_date.year); // read year
+    clear_input_buffer(); // clear newline
 
     printf("Wholesale price: ");
-    scanf("%f", &item->wholesale_price);
-    clear_input_buffer();
+    scanf("%f", &item->wholesale_price); // read wholesale price
+    clear_input_buffer(); // clear newline
 
     printf("Unit price: ");
-    scanf("%f", &item->unit_price);
-    clear_input_buffer();
+    scanf("%f", &item->unit_price); // read unit price
+    clear_input_buffer(); // clear newline
 
     printf("Quantity: ");
-    scanf("%d", &item->quantity);
-    clear_input_buffer();
+    scanf("%d", &item->quantity); // read quantity
+    clear_input_buffer(); // clear newline
 }
 
 
 void print_all_info(const Info *items, int n) {
-    const Info *p;
-    int i = 1;
+    const Info *p; // pointer for iteration
+    int i = 1; // record number
 
-    for (p = items; p < items + n; p++) {
+    for (p = items; p < items + n; p++) { // go through all records
         printf("\nRecord %d:\n", i++);
         printf("Owner: %s %s\n", p->owner_name, p->owner_surname);
         printf("Product: %s\n", p->product_name);
@@ -161,16 +162,16 @@ void print_all_info(const Info *items, int n) {
 
 
 int save_records_to_experiment(const char *filename, const Info *items, int n) {
-    FILE *file = fopen(filename, "w");
-    const Info *p;
+    FILE *file = fopen(filename, "w"); // open file for writing
+    const Info *p; // pointer for iteration
 
     if (file == NULL) {
-        return 0;
+        return 0; // file open failed
     }
 
-    fprintf(file, "%d\n", n);
+    fprintf(file, "%d\n", n); // save number of records
 
-    for (p = items; p < items + n; p++) {
+    for (p = items; p < items + n; p++) { // write each record
         fprintf(file, "%s|%s|%s|%s|%d|%s|%d|%.2f|%.2f|%d\n",
                 p->owner_name,
                 p->owner_surname,
@@ -184,32 +185,32 @@ int save_records_to_experiment(const char *filename, const Info *items, int n) {
                 p->quantity);
     }
 
-    fclose(file);
-    return 1;
+    fclose(file); // close file
+    return 1; // success
 }
 
 
 int load_records_from_experiment(const char *filename, Info **items, int *n) {
-    FILE *file = fopen(filename, "r");
-    Info *temp;
-    Info *p;
+    FILE *file = fopen(filename, "r"); // open file for reading
+    Info *temp; // temporary array
+    Info *p; // pointer for iteration
 
     if (file == NULL) {
-        return 0;
+        return 0; // file open failed
     }
 
-    if (fscanf(file, "%d", n) != 1 || *n <= 0) {
+    if (fscanf(file, "%d", n) != 1 || *n <= 0) { // read number of records
         fclose(file);
         return 0;
     }
 
-    temp = (Info *)malloc((*n) * sizeof(Info));
+    temp = (Info *)malloc((*n) * sizeof(Info)); // allocate memory for records
     if (temp == NULL) {
         fclose(file);
-        return 0;
+        return 0; // allocation failed
     }
 
-    for (p = temp; p < temp + *n; p++) {
+    for (p = temp; p < temp + *n; p++) { // read each record
         if (fscanf(file,
                    " %49[^|]|%49[^|]|%49[^|]|%49[^|]|%d|%49[^|]|%d|%f|%f|%d",
                    p->owner_name,
@@ -222,199 +223,196 @@ int load_records_from_experiment(const char *filename, Info **items, int *n) {
                    &p->wholesale_price,
                    &p->unit_price,
                    &p->quantity) != 10) {
-            free(temp);
+            free(temp); // free memory if reading fails
             fclose(file);
             return 0;
         }
     }
 
-    fclose(file);
-    *items = temp;
-    return 1;
+    fclose(file); // close file
+    *items = temp; // return loaded records
+    return 1; // success
 }
 
 
 void calculate_totals(const Info *items, int n, ProductTotal **totals, int *total_count) {
-    ProductTotal *temp;
-    const Info *p;
-    ProductTotal *t;
-    int count = 0;
-    int found;
+    ProductTotal *temp; // temporary totals array
+    const Info *p; // pointer through items
+    ProductTotal *t; // pointer through totals
+    int count = 0; // number of unique products
+    int found; // flag for existing product
 
-    temp = (ProductTotal *)malloc(n * sizeof(ProductTotal));
+    temp = (ProductTotal *)malloc(n * sizeof(ProductTotal)); // worst case: all unique
     if (temp == NULL) {
-        *totals = NULL;
+        *totals = NULL; // allocation failed
         *total_count = 0;
         return;
     }
 
-    for (p = items; p < items + n; p++) {
-        found = 0;
+    for (p = items; p < items + n; p++) { // process all records
+        found = 0; // assume product not found
 
-        for (t = temp; t < temp + count; t++) {
+        for (t = temp; t < temp + count; t++) { // search existing products
             if (strcmp(t->product_name, p->product_name) == 0) {
-                t->total_quantity += p->quantity;
-                found = 1;
+                t->total_quantity += p->quantity; // add quantity
+                found = 1; // mark as found
                 break;
             }
         }
 
-        if (!found) {
+        if (!found) { // new product
             strncpy((temp + count)->product_name, p->product_name, MAX_CHAR - 1);
             (temp + count)->product_name[MAX_CHAR - 1] = '\0';
             (temp + count)->total_quantity = p->quantity;
-            count++;
+            count++; // increase number of unique products
         }
     }
 
-    *totals = temp;
-    *total_count = count;
+    *totals = temp; // return totals array
+    *total_count = count; // return count
 }
 
 
 void sort_totals_desc(ProductTotal *totals, int total_count) {
     int i, j;
-    ProductTotal temp;
-    ProductTotal *a;
-    ProductTotal *b;
+    ProductTotal key;
 
-    for (i = 0; i < total_count - 1; i++) {
-        for (j = 0; j < total_count - i - 1; j++) {
-            a = totals + j;
-            b = totals + j + 1;
+    for (i = 1; i < total_count; i++) {
+        key = *(totals + i);
+        j = i - 1;
 
-            if (strcmp(a->product_name, b->product_name) < 0) {
-                temp = *a;
-                *a = *b;
-                *b = temp;
-            }
+        while (j >= 0 && strcmp((totals + j)->product_name, key.product_name) < 0) {
+            *(totals + j + 1) = *(totals + j);
+            j--;
         }
+
+        *(totals + j + 1) = key;
     }
 }
 
 
 int save_totals_to_output(const char *filename, const ProductTotal *totals, int total_count) {
-    FILE *file = fopen(filename, "w");
-    const ProductTotal *p;
+    FILE *file = fopen(filename, "w"); // open file for writing
+    const ProductTotal *p; // pointer for iteration
 
     if (file == NULL) {
-        return 0;
+        return 0; // file open failed
     }
 
-    for (p = totals; p < totals + total_count; p++) {
+    for (p = totals; p < totals + total_count; p++) { // write each total
         fprintf(file, "%s - %d units\n", p->product_name, p->total_quantity);
     }
 
-    fclose(file);
-    return 1;
+    fclose(file); // close file
+    return 1; // success
 }
 
 
 int output_to_experiment(const char *output_filename, const char *experiment_filename) {
-    FILE *fout;
-    FILE *fexp;
-    FILE *ftemp;
-    int ch;
+    FILE *fout; // output.txt file
+    FILE *fexp; // experiment.txt file
+    FILE *ftemp; // temporary file
+    int ch; // current character
 
-    fout = fopen(output_filename, "r");
-    fexp = fopen(experiment_filename, "r");
-    ftemp = fopen("temp.txt", "w");
+    fout = fopen(output_filename, "r"); // open output file
+    fexp = fopen(experiment_filename, "r"); // open experiment file
+    ftemp = fopen("temp.txt", "w"); // open temp file
 
     if (fout == NULL || fexp == NULL || ftemp == NULL) {
-        if (fout != NULL) fclose(fout);
+        if (fout != NULL) fclose(fout); // close opened files
         if (fexp != NULL) fclose(fexp);
         if (ftemp != NULL) fclose(ftemp);
-        return 0;
+        return 0; // opening failed
     }
 
-    while ((ch = fgetc(fout)) != EOF) {
+    while ((ch = fgetc(fout)) != EOF) { // copy output.txt to temp
         fputc(ch, ftemp);
     }
 
-    fputc('\n', ftemp);
+    fputc('\n', ftemp); // add empty line between files
 
-    while ((ch = fgetc(fexp)) != EOF) {
+    while ((ch = fgetc(fexp)) != EOF) { // copy experiment.txt after output text
         fputc(ch, ftemp);
     }
 
-    fclose(fout);
+    fclose(fout); // close files
     fclose(fexp);
     fclose(ftemp);
 
-    remove(experiment_filename);
-    rename("temp.txt", experiment_filename);
+    remove(experiment_filename); // delete old experiment.txt
+    rename("temp.txt", experiment_filename); // rename temp file
 
-    return 1;
+    return 1; // success
 }
 
 
 void print_text_file(const char *filename) {
-    FILE *file = fopen(filename, "r");
-    int ch;
+    FILE *file = fopen(filename, "r"); // open file for reading
+    int ch; // current character
 
     if (file == NULL) {
-        return;
+        return; // file open failed
     }
 
-    printf("\n%s:\n", filename);
-    while ((ch = fgetc(file)) != EOF) {
+    printf("\n%s:\n", filename); // print file name
+    while ((ch = fgetc(file)) != EOF) { // print whole file
         putchar(ch);
     }
     printf("\n");
 
-    fclose(file);
+    fclose(file); // close file
 }
 
 
 int main(void) {
-    int n;
-    int loaded_n;
-    int total_count;
-    Info *items;
-    Info *loaded_items;
-    ProductTotal *totals;
-    Info *p;
+    int n; // number of records
+    int loaded_n; // number of loaded records
+    int total_count; // number of product totals
+    Info *items; // entered records
+    Info *loaded_items; // records loaded from file
+    ProductTotal *totals; // totals array
+    Info *p; // pointer for iteration
 
     printf("Enter number of records: ");
-    scanf("%d", &n);
-    clear_input_buffer();
+    scanf("%d", &n); // read number of records
+    clear_input_buffer(); // clear newline
 
     if (n <= 0) {
-        return 1;
+        return 1; // invalid count
     }
 
-    items = (Info *)malloc(n * sizeof(Info));
+    items = (Info *)malloc(n * sizeof(Info)); // allocate records array
     if (items == NULL) {
-        return 1;
+        return 1; // allocation failed
     }
 
-    for (p = items; p < items + n; p++) {
+    for (p = items; p < items + n; p++) { // read all records
         printf("\nRecord %ld\n", (long)(p - items) + 1);
         input_info(p);
     }
 
     if (!save_records_to_experiment("experiment.txt", items, n)) {
-        free(items);
+        free(items); // free memory on failure
         return 1;
     }
 
-    loaded_items = NULL;
+    loaded_items = NULL; // initialize pointer
     if (!load_records_from_experiment("experiment.txt", &loaded_items, &loaded_n)) {
-        free(items);
+        free(items); // free memory on failure
         return 1;
     }
 
-    print_all_info(loaded_items, loaded_n);
+    print_all_info(loaded_items, loaded_n); // display read data
 
-    totals = NULL;
-    calculate_totals(loaded_items, loaded_n, &totals, &total_count);
+    totals = NULL; // initialize pointer
+    calculate_totals(loaded_items, loaded_n, &totals, &total_count); // compute totals
     if (totals == NULL) {
         free(items);
         free(loaded_items);
         return 1;
     }
 
-    sort_totals_desc(totals, total_count);
+    sort_totals_desc(totals, total_count); // sort totals
 
     if (!save_totals_to_output("output.txt", totals, total_count)) {
         free(items);
@@ -423,7 +421,7 @@ int main(void) {
         return 1;
     }
 
-    print_text_file("output.txt");
+    print_text_file("output.txt"); // display output.txt
 
     if (!output_to_experiment("output.txt", "experiment.txt")) {
         free(items);
@@ -432,11 +430,11 @@ int main(void) {
         return 1;
     }
 
-    print_text_file("experiment.txt");
+    print_text_file("experiment.txt"); // display modified experiment.txt
 
-    free(items);
-    free(loaded_items);
-    free(totals);
+    free(items); // free entered records
+    free(loaded_items); // free loaded records
+    free(totals); // free totals
 
-    return 0;
+    return 0; // successful finish
 }

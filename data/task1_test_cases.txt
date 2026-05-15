@@ -62,3 +62,12 @@ Declarative sentences: 1
 Sentences ending with '...': 1
 Difference: 0
 Second ellipsis sentence: no
+
+Case 8: Romanian text with diacritics
+Input:
+Ana merge la școală. Ce faci? Așteaptă... Gata…
+Expected:
+Declarative sentences: 1
+Sentences ending with '...': 2
+Difference: -1
+Length of the 2nd sentence ending with '...': 5

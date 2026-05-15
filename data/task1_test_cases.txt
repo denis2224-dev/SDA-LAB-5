@@ -1,0 +1,64 @@
+Test cases for task1.c
+
+Case 1: Basic ASCII punctuation
+Input:
+Hello. Wait... What?
+Expected:
+Declarative sentences: 1
+Sentences ending with '...': 1
+Difference: 0
+Second ellipsis sentence: no
+
+Case 2: Two declarative sentences and one ellipsis sentence
+Input:
+One. Two. Three...
+Expected:
+Declarative sentences: 2
+Sentences ending with '...': 1
+Difference: 1
+Second ellipsis sentence: no
+
+Case 3: Two ellipsis sentences
+Input:
+First... Second... Third.
+Expected:
+Declarative sentences: 1
+Sentences ending with '...': 2
+Difference: -1
+Length of the 2nd sentence ending with '...': 9
+
+Case 4: Unicode ellipsis, Arabic question mark, CJK full stop, fullwidth period
+Input:
+Salut… Arabic؟ Done。 Alt…… Final．
+Expected:
+Declarative sentences: 2
+Sentences ending with '...': 2
+Difference: 0
+Length of the 2nd sentence ending with '...': 5
+
+Case 5: Chinese text with CJK punctuation
+Input:
+你好。 等一下…… 好吗？ 完了．
+Expected:
+Declarative sentences: 2
+Sentences ending with '...': 1
+Difference: 1
+Second ellipsis sentence: no
+
+Case 6: Arabic/Urdu-style punctuation
+Input:
+مرحبا؟ انتهى۔ انتظر… النهاية.
+Expected:
+Declarative sentences: 2
+Sentences ending with '...': 1
+Difference: 1
+Second ellipsis sentence: no
+
+Case 7: Leading and trailing spaces
+Input:
+   ...   Text.   
+Expected:
+Declarative sentences: 1
+Sentences ending with '...': 1
+Difference: 0
+Second ellipsis sentence: no
